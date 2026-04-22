@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>HerculeX Cyber Labs</title>
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #020b14;
+      --surface: #041624;
+      --accent: #00ffe0;
+      --accent2: #0077ff;
+      --danger: #ff003c;
+      --text: #c8dde8;
+      --muted: #4a7a8a;
+      --mono: 'Share Tech Mono', monospace;
+      --sans: 'Rajdhani', sans-serif;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--sans);
+      font-size: 16px;
+      overflow-x: hidden;
+    }
+
+    /* ── GRID BACKGROUND ── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(0,255,224,.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,255,224,.03) 1px, transparent 1px);
+      background-size: 40px 40px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ── SCANLINES ── */
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 2px,
+        rgba(0,0,0,.15) 2px,
+        rgba(0,0,0,.15) 4px
+      );
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1rem 2.5rem;
+      background: rgba(2,11,20,.85);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(0,255,224,.1);
+    }
+
+    .logo {
+      font-family: var(--mono);
+      font-size: 1.1rem;
+      color: var(--accent);
+      letter-spacing: 2px;
+      text-decoration: none;
+    }
+
+    .logo span { color: var(--danger); }
+
+    nav ul {
+      list-style: none;
+      display: flex;
+      gap: 2rem;
+    }
+
+    nav ul a {
+      font-family: var(--mono);
+      font-size: .8rem;
+      color: var(--muted);
+      text-decoration: none;
+      letter-spacing: 1px;
+      transition: color .2s;
+    }
+
+    nav ul a:hover { color: var(--accent); }
+
+    /* ── HERO ── */
+    .hero {
+      position: relative;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 6rem 2rem 4rem;
+      z-index: 1;
+    }
+
+    .hero-badge {
+      font-family: var(--mono);
+      font-size: .7rem;
+      letter-spacing: 3px;
+      color: var(--accent);
+      border: 1px solid rgba(0,255,224,.3);
+      padding: .35rem 1rem;
+      border-radius: 2px;
+      margin-bottom: 2rem;
+      animation: fadeDown .6s ease both;
+    }
+
+    .hero h1 {
+      font-family: var(--sans);
+      font-size: clamp(2.5rem, 7vw, 5.5rem);
+      font-weight: 700;
+      line-height: 1.05;
+      letter-spacing: -1px;
+      animation: fadeDown .7s .1s ease both;
+    }
+
+    .hero h1 .hl { color: var(--accent); }
+    .hero h1 .hl2 { color: var(--accent2); }
+
+    .hero-sub {
+      margin-top: 1.5rem;
+      font-family: var(--mono);
+      font-size: .95rem;
+      color: var(--muted);
+      max-width: 560px;
+      line-height: 1.7;
+      animation: fadeDown .8s .2s ease both;
+    }
+
+    .hero-cta {
+      margin-top: 2.5rem;
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      justify-content: center;
+      animation: fadeDown .9s .3s ease both;
+    }
+
+    .btn {
+      font-family: var(--mono);
+      font-size: .8rem;
+      letter-spacing: 1px;
+      padding: .75rem 2rem;
+      border-radius: 2px;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all .2s;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: var(--bg);
+      border: none;
+      font-weight: bold;
+    }
+
+    .btn-primary:hover {
+      box-shadow: 0 0 20px rgba(0,255,224,.5);
+      transform: translateY(-2px);
+    }
+
+    .btn-outline {
+      background: transparent;
+      color: var(--accent);
+      border: 1px solid rgba(0,255,224,.4);
+    }
+
+    .btn-outline:hover {
+      border-color: var(--accent);
+      box-shadow: 0 0 15px rgba(0,255,224,.2);
+    }
+
+    /* ── TERMINAL TICKER ── */
+    .ticker {
+      position: absolute;
+      bottom: 2.5rem;
+      left: 50%;
+      transform: translateX(-50%);
+      font-family: var(--mono);
+      font-size: .75rem;
+      color: var(--muted);
+      white-space: nowrap;
+      overflow: hidden;
+      width: min(600px, 90vw);
+    }
+
+    .ticker-inner {
+      display: inline-block;
+      animation: ticker 18s linear infinite;
+    }
+
+    @keyframes ticker {
+      0% { transform: translateX(100%); }
+      100% { transform: translateX(-100%); }
+    }
+
+    /* ── STATS BAR ── */
+    .stats {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      justify-content: center;
+      gap: 0;
+      flex-wrap: wrap;
+      border-top: 1px solid rgba(0,255,224,.08);
+      border-bottom: 1px solid rgba(0,255,224,.08);
+      background: rgba(4,22,36,.6);
+    }
+
+    .stat {
+      padding: 2rem 3rem;
+      text-align: center;
+      border-right: 1px solid rgba(0,255,224,.08);
+      flex: 1;
+      min-width: 160px;
+    }
+
+    .stat:last-child { border-right: none; }
+
+    .stat-num {
+      font-family: var(--mono);
+      font-size: 2rem;
+      color: var(--accent);
+      display: block;
+    }
+
+    .stat-label {
+      font-size: .8rem;
+      color: var(--muted);
+      letter-spacing: 2px;
+      margin-top: .3rem;
+      text-transform: uppercase;
+    }
+
+    /* ── SERVICES ── */
+    .section {
+      position: relative;
+      z-index: 1;
+      padding: 6rem 2rem;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .section-label {
+      font-family: var(--mono);
+      font-size: .75rem;
+      letter-spacing: 3px;
+      color: var(--accent2);
+      margin-bottom: .75rem;
+    }
+
+    .section-title {
+      font-size: clamp(1.8rem, 4vw, 2.8rem);
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      margin-bottom: 3rem;
+    }
+
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid rgba(0,255,224,.08);
+      border-radius: 4px;
+      padding: 2rem;
+      transition: all .25s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 3px; height: 100%;
+      background: var(--accent);
+      transform: scaleY(0);
+      transform-origin: bottom;
+      transition: transform .3s;
+    }
+
+    .card:hover { border-color: rgba(0,255,224,.25); transform: translateY(-4px); }
+    .card:hover::before { transform: scaleY(1); }
+
+    .card-icon {
+      font-size: 1.8rem;
+      margin-bottom: 1rem;
+    }
+
+    .card h3 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: .6rem;
+      letter-spacing: .5px;
+    }
+
+    .card p {
+      font-size: .9rem;
+      color: var(--muted);
+      line-height: 1.65;
+    }
+
+    /* ── WHY US ── */
+    .why-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1rem;
+    }
+
+    .why-item {
+      padding: 1.5rem;
+      border: 1px solid rgba(0,255,224,.06);
+      border-radius: 4px;
+      background: rgba(4,22,36,.4);
+    }
+
+    .why-item .tag {
+      font-family: var(--mono);
+      font-size: .7rem;
+      color: var(--accent);
+      letter-spacing: 2px;
+      margin-bottom: .5rem;
+    }
+
+    .why-item p {
+      font-size: .9rem;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    /* ── CTA SECTION ── */
+    .cta-section {
+      position: relative;
+      z-index: 1;
+      text-align: center;
+      padding: 5rem 2rem;
+      background: linear-gradient(135deg, rgba(0,119,255,.05), rgba(0,255,224,.05));
+      border-top: 1px solid rgba(0,255,224,.08);
+      border-bottom: 1px solid rgba(0,255,224,.08);
+    }
+
+    .cta-section h2 {
+      font-size: clamp(1.6rem, 4vw, 2.5rem);
+      font-weight: 700;
+      margin-bottom: 1rem;
+    }
+
+    .cta-section p {
+      color: var(--muted);
+      font-family: var(--mono);
+      font-size: .85rem;
+      margin-bottom: 2rem;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      position: relative;
+      z-index: 1;
+      padding: 2rem;
+      text-align: center;
+      font-family: var(--mono);
+      font-size: .75rem;
+      color: var(--muted);
+      border-top: 1px solid rgba(0,255,224,.06);
+    }
+
+    footer a { color: var(--accent); text-decoration: none; }
+
+    /* ── ANIMATIONS ── */
+    @keyframes fadeDown {
+      from { opacity: 0; transform: translateY(-20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── CURSOR BLINK ── */
+    .blink {
+      animation: blink 1s step-end infinite;
+      color: var(--accent);
+    }
+    @keyframes blink { 50% { opacity: 0; } }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <a href="#" class="logo">HERCULE<span>X</span>_LABS</a>
+    <ul>
+      <li><a href="#services">SERVICES</a></li>
+      <li><a href="#about">ABOUT</a></li>
+      <li><a href="#contact">CONTACT</a></li>
+    </ul>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-badge">// CYBERSECURITY STARTUP — INDIA</div>
+    <h1>
+      Defending the<br>
+      <span class="hl">Digital</span> <span class="hl2">Frontier</span>
+    </h1>
+    <p class="hero-sub">
+      HerculeX Cyber Labs protects organizations against modern and emerging cyber threats. 
+      We specialize in Security Operations, Threat Intelligence &amp; Incident Response.
+    </p>
+    <div class="hero-cta">
+      <a href="#contact" class="btn btn-primary">GET PROTECTED</a>
+      <a href="#services" class="btn btn-outline">OUR SERVICES</a>
+    </div>
+
+    <div class="ticker">
+      <span class="ticker-inner">
+        [ THREAT MONITORING ACTIVE ] &nbsp;///&nbsp; ENDPOINT DETECTION &amp; RESPONSE &nbsp;///&nbsp; 
+        ZERO-DAY VULNERABILITY RESEARCH &nbsp;///&nbsp; SOC AS A SERVICE &nbsp;///&nbsp; 
+        PENETRATION TESTING &nbsp;///&nbsp; DMARC / SPF / DKIM HARDENING &nbsp;///&nbsp;
+        INCIDENT RESPONSE 24/7 &nbsp;///&nbsp;
+      </span>
+    </div>
+  </section>
+
+  <!-- STATS -->
+  <div class="stats">
+    <div class="stat">
+      <span class="stat-num">24/7</span>
+      <span class="stat-label">Monitoring</span>
+    </div>
+    <div class="stat">
+      <span class="stat-num">100%</span>
+      <span class="stat-label">Commitment</span>
+    </div>
+    <div class="stat">
+      <span class="stat-num">&lt;1hr</span>
+      <span class="stat-label">Response Time</span>
+    </div>
+    <div class="stat">
+      <span class="stat-num">0</span>
+      <span class="stat-label">Compromises</span>
+    </div>
+  </div>
+
+  <!-- SERVICES -->
+  <div class="section" id="services">
+    <div class="section-label">// WHAT WE DO</div>
+    <h2 class="section-title">Core Services</h2>
+    <div class="services-grid">
+      <div class="card">
+        <div class="card-icon">🛡️</div>
+        <h3>Security Operations</h3>
+        <p>Round-the-clock SOC services with real-time threat detection, alerting, and triage by our experienced analysts.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">🔍</div>
+        <h3>Penetration Testing</h3>
+        <p>Simulated attacks on your infrastructure, applications, and networks to expose vulnerabilities before attackers do.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">🚨</div>
+        <h3>Incident Response</h3>
+        <p>Rapid containment, forensic investigation, and recovery support when a breach or cyberattack occurs.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">🧠</div>
+        <h3>Threat Intelligence</h3>
+        <p>Actionable intelligence on threat actors, TTPs, and indicators of compromise tailored to your industry.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">📧</div>
+        <h3>Email Security</h3>
+        <p>SPF, DKIM, DMARC hardening and anti-phishing controls to protect your domain from impersonation attacks.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">☁️</div>
+        <h3>Cloud Security</h3>
+        <p>Security posture assessments, misconfiguration audits, and hardening for AWS, Azure, and GCP environments.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- WHY US -->
+  <div class="section" id="about">
+    <div class="section-label">// WHY HERCULEX</div>
+    <h2 class="section-title">Built for the Modern Threat Landscape</h2>
+    <div class="why-grid">
+      <div class="why-item">
+        <div class="tag">EXPERTISE</div>
+        <p>Team of certified security professionals with deep hands-on experience across offensive and defensive security.</p>
+      </div>
+      <div class="why-item">
+        <div class="tag">SPEED</div>
+        <p>Sub-1-hour incident response SLAs. When you're under attack, every second counts.</p>
+      </div>
+      <div class="why-item">
+        <div class="tag">TAILORED</div>
+        <p>No one-size-fits-all. Every engagement is customized to your threat model, compliance needs, and budget.</p>
+      </div>
+      <div class="why-item">
+        <div class="tag">TRANSPARENT</div>
+        <p>Clear reporting, honest findings, and actionable remediation guidance — no jargon, no fluff.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- CTA -->
+  <div class="cta-section" id="contact">
+    <h2>Ready to Secure Your Organization?</h2>
+    <p>// Reach out and let's discuss your security posture</p>
+    <a href="mailto:founder@herculexcyberlabs.com" class="btn btn-primary">
+      CONTACT US →
+    </a>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <p>© 2026 HerculeX Cyber Labs &nbsp;|&nbsp; 
+      <a href="mailto:founder@herculexcyberlabs.com">founder@herculexcyberlabs.com</a> 
+      &nbsp;|&nbsp; herculexcyberlabs.com
+      &nbsp;|&nbsp; <span class="blink">▮</span>
+    </p>
+  </footer>
+
+</body>
+</html>
