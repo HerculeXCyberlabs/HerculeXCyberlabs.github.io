@@ -1,614 +1,412 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>HerculeX Cyber Labs</title>
-  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet"/>
-  <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-    :root {
-      --bg: #020b14;
-      --surface: #041624;
-      --accent: #00ffe0;
-      --accent2: #0077ff;
-      --danger: #ff003c;
-      --text: #c8dde8;
-      --muted: #4a7a8a;
-      --mono: 'Share Tech Mono', monospace;
-      --sans: 'Rajdhani', sans-serif;
-    }
-
-    html { scroll-behavior: smooth; }
-
-    body {
-      background: var(--bg);
-      color: var(--text);
-      font-family: var(--sans);
-      font-size: 16px;
-      overflow-x: hidden;
-    }
-
-    /* ── GRID BACKGROUND ── */
-    body::before {
-      content: '';
-      position: fixed;
-      inset: 0;
-      background-image:
-        linear-gradient(rgba(0,255,224,.03) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(0,255,224,.03) 1px, transparent 1px);
-      background-size: 40px 40px;
-      pointer-events: none;
-      z-index: 0;
-    }
-
-    /* ── SCANLINES ── */
-    body::after {
-      content: '';
-      position: fixed;
-      inset: 0;
-      background: repeating-linear-gradient(
-        0deg,
-        transparent,
-        transparent 2px,
-        rgba(0,0,0,.15) 2px,
-        rgba(0,0,0,.15) 4px
-      );
-      pointer-events: none;
-      z-index: 0;
-    }
-
-    /* ── NAV ── */
-    nav {
-      position: fixed;
-      top: 0; left: 0; right: 0;
-      z-index: 100;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 1rem 2.5rem;
-      background: rgba(2,11,20,.85);
-      backdrop-filter: blur(10px);
-      border-bottom: 1px solid rgba(0,255,224,.1);
-    }
-
-    .logo {
-      font-family: var(--mono);
-      font-size: 1.1rem;
-      color: var(--accent);
-      letter-spacing: 2px;
-      text-decoration: none;
-    }
-
-    .logo span { color: var(--danger); }
-
-    nav ul {
-      list-style: none;
-      display: flex;
-      gap: 2rem;
-    }
-
-    nav ul a {
-      font-family: var(--mono);
-      font-size: .8rem;
-      color: var(--muted);
-      text-decoration: none;
-      letter-spacing: 1px;
-      transition: color .2s;
-    }
-
-    nav ul a:hover { color: var(--accent); }
-
-    /* ── HERO ── */
-    .hero {
-      position: relative;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      padding: 6rem 2rem 4rem;
-      z-index: 1;
-    }
-
-    .hero-badge {
-      font-family: var(--mono);
-      font-size: .7rem;
-      letter-spacing: 3px;
-      color: var(--accent);
-      border: 1px solid rgba(0,255,224,.3);
-      padding: .35rem 1rem;
-      border-radius: 2px;
-      margin-bottom: 2rem;
-      animation: fadeDown .6s ease both;
-    }
-
-    .hero h1 {
-      font-family: var(--sans);
-      font-size: clamp(2.5rem, 7vw, 5.5rem);
-      font-weight: 700;
-      line-height: 1.05;
-      letter-spacing: -1px;
-      animation: fadeDown .7s .1s ease both;
-    }
-
-    .hero h1 .hl { color: var(--accent); }
-    .hero h1 .hl2 { color: var(--accent2); }
-
-    .hero-sub {
-      margin-top: 1.5rem;
-      font-family: var(--mono);
-      font-size: .95rem;
-      color: var(--muted);
-      max-width: 560px;
-      line-height: 1.7;
-      animation: fadeDown .8s .2s ease both;
-    }
-
-    .hero-cta {
-      margin-top: 2.5rem;
-      display: flex;
-      gap: 1rem;
-      flex-wrap: wrap;
-      justify-content: center;
-      animation: fadeDown .9s .3s ease both;
-    }
-
-    .btn {
-      font-family: var(--mono);
-      font-size: .8rem;
-      letter-spacing: 1px;
-      padding: .75rem 2rem;
-      border-radius: 2px;
-      cursor: pointer;
-      text-decoration: none;
-      transition: all .2s;
-    }
-
-    .btn-primary {
-      background: var(--accent);
-      color: var(--bg);
-      border: none;
-      font-weight: bold;
-    }
-
-    .btn-primary:hover {
-      box-shadow: 0 0 20px rgba(0,255,224,.5);
-      transform: translateY(-2px);
-    }
-
-    .btn-outline {
-      background: transparent;
-      color: var(--accent);
-      border: 1px solid rgba(0,255,224,.4);
-    }
-
-    .btn-outline:hover {
-      border-color: var(--accent);
-      box-shadow: 0 0 15px rgba(0,255,224,.2);
-    }
-
-    /* ── TERMINAL TICKER ── */
-    .ticker {
-      position: absolute;
-      bottom: 2.5rem;
-      left: 50%;
-      transform: translateX(-50%);
-      font-family: var(--mono);
-      font-size: .75rem;
-      color: var(--muted);
-      white-space: nowrap;
-      overflow: hidden;
-      width: min(600px, 90vw);
-    }
-
-    .ticker-inner {
-      display: inline-block;
-      animation: ticker 18s linear infinite;
-    }
-
-    @keyframes ticker {
-      0% { transform: translateX(100%); }
-      100% { transform: translateX(-100%); }
-    }
-
-    /* ── STATS BAR ── */
-    .stats {
-      position: relative;
-      z-index: 1;
-      display: flex;
-      justify-content: center;
-      gap: 0;
-      flex-wrap: wrap;
-      border-top: 1px solid rgba(0,255,224,.08);
-      border-bottom: 1px solid rgba(0,255,224,.08);
-      background: rgba(4,22,36,.6);
-    }
-
-    .stat {
-      padding: 2rem 3rem;
-      text-align: center;
-      border-right: 1px solid rgba(0,255,224,.08);
-      flex: 1;
-      min-width: 160px;
-    }
-
-    .stat:last-child { border-right: none; }
-
-    .stat-num {
-      font-family: var(--mono);
-      font-size: 2rem;
-      color: var(--accent);
-      display: block;
-    }
-
-    .stat-label {
-      font-size: .8rem;
-      color: var(--muted);
-      letter-spacing: 2px;
-      margin-top: .3rem;
-      text-transform: uppercase;
-    }
-
-    /* ── SERVICES ── */
-    .section {
-      position: relative;
-      z-index: 1;
-      padding: 6rem 2rem;
-      max-width: 1100px;
-      margin: 0 auto;
-    }
-
-    .section-label {
-      font-family: var(--mono);
-      font-size: .75rem;
-      letter-spacing: 3px;
-      color: var(--accent2);
-      margin-bottom: .75rem;
-    }
-
-    .section-title {
-      font-size: clamp(1.8rem, 4vw, 2.8rem);
-      font-weight: 700;
-      letter-spacing: -0.5px;
-      margin-bottom: 3rem;
-    }
-
-    .services-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 1.5rem;
-    }
-
-    .card {
-      background: var(--surface);
-      border: 1px solid rgba(0,255,224,.08);
-      border-radius: 4px;
-      padding: 2rem;
-      transition: all .25s;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .card::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 0;
-      width: 3px; height: 100%;
-      background: var(--accent);
-      transform: scaleY(0);
-      transform-origin: bottom;
-      transition: transform .3s;
-    }
-
-    .card:hover { border-color: rgba(0,255,224,.25); transform: translateY(-4px); }
-    .card:hover::before { transform: scaleY(1); }
-
-    .card-icon {
-      font-size: 1.8rem;
-      margin-bottom: 1rem;
-    }
-
-    .card h3 {
-      font-size: 1.1rem;
-      font-weight: 700;
-      color: #fff;
-      margin-bottom: .6rem;
-      letter-spacing: .5px;
-    }
-
-    .card p {
-      font-size: .9rem;
-      color: var(--muted);
-      line-height: 1.65;
-    }
-
-    /* ── WHY US ── */
-    .why-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 1rem;
-    }
-
-    .why-item {
-      padding: 1.5rem;
-      border: 1px solid rgba(0,255,224,.06);
-      border-radius: 4px;
-      background: rgba(4,22,36,.4);
-    }
-
-    .why-item .tag {
-      font-family: var(--mono);
-      font-size: .7rem;
-      color: var(--accent);
-      letter-spacing: 2px;
-      margin-bottom: .5rem;
-    }
-
-    .why-item p {
-      font-size: .9rem;
-      color: var(--muted);
-      line-height: 1.6;
-    }
-
-    /* ── CTA SECTION ── */
-    .cta-section {
-      position: relative;
-      z-index: 1;
-      text-align: center;
-      padding: 5rem 2rem;
-      background: linear-gradient(135deg, rgba(0,119,255,.05), rgba(0,255,224,.05));
-      border-top: 1px solid rgba(0,255,224,.08);
-      border-bottom: 1px solid rgba(0,255,224,.08);
-    }
-
-    .cta-section h2 {
-      font-size: clamp(1.6rem, 4vw, 2.5rem);
-      font-weight: 700;
-      margin-bottom: 1rem;
-    }
-
-    .cta-section p {
-      color: var(--muted);
-      font-family: var(--mono);
-      font-size: .85rem;
-      margin-bottom: 2rem;
-    }
-
-    /* ── FOOTER ── */
-    footer {
-      position: relative;
-      z-index: 1;
-      padding: 2rem;
-      text-align: center;
-      font-family: var(--mono);
-      font-size: .75rem;
-      color: var(--muted);
-      border-top: 1px solid rgba(0,255,224,.06);
-    }
-
-    footer a { color: var(--accent); text-decoration: none; }
-
-    /* ── ANIMATIONS ── */
-    @keyframes fadeDown {
-      from { opacity: 0; transform: translateY(-20px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-
-    /* ── CURSOR BLINK ── */
-    .blink {
-      animation: blink 1s step-end infinite;
-      color: var(--accent);
-    }
-    @keyframes blink { 50% { opacity: 0; } }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Herculex Cyber Labs | SOC Budget Calculator & SIEM Cost Predictor</title>
+    <!-- Google Fonts + Tailwind + Font Awesome + jsPDF + html2canvas -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * { font-family: 'Inter', sans-serif; }
+        .card-premium {
+            background: rgba(255,255,255,0.92);
+            backdrop-filter: blur(2px);
+            border-radius: 2rem;
+            box-shadow: 0 25px 45px -12px rgba(0,0,0,0.15), 0 0 0 1px rgba(0,0,0,0.03);
+            transition: transform 0.25s ease, box-shadow 0.25s ease;
+        }
+        .card-premium:hover { transform: translateY(-3px); box-shadow: 0 30px 50px -12px rgba(0,0,0,0.2); }
+        .gradient-bg { background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); }
+        .btn-gradient {
+            background: linear-gradient(95deg, #2563eb, #1d4ed8);
+            transition: all 0.2s;
+        }
+        .btn-gradient:hover { transform: scale(0.98); box-shadow: 0 8px 20px -4px #1e3a8a; }
+        .btn-outline-premium {
+            border: 1px solid #cbd5e1;
+            transition: all 0.2s;
+        }
+        .btn-outline-premium:hover { background: #f1f5f9; border-color: #94a3b8; }
+        .range-slider {
+            -webkit-appearance: none;
+            background: #e2e8f0;
+            height: 6px;
+            border-radius: 10px;
+        }
+        .range-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 20px;
+            height: 20px;
+            background: #2563eb;
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+            border: 2px solid white;
+        }
+        .fade-in { animation: fadeInUp 0.5s ease-out; }
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(18px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .toast-msg {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            background: #1f2937;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 60px;
+            font-size: 0.9rem;
+            z-index: 999;
+            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            opacity: 0;
+            transition: opacity 0.25s;
+            pointer-events: none;
+        }
+        input:focus, select:focus, textarea:focus { ring: 2px solid #2563eb; border-color: #2563eb; outline: none; }
+        .modal-bg {
+            background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(4px);
+        }
+        .lead-card {
+            transition: all 0.2s;
+        }
+    </style>
 </head>
-<body>
+<body class="antialiased bg-slate-50">
 
-  <!-- NAV -->
-  <nav>
-    <a href="#" class="logo">HERCULE<span>X</span>_LABS</a>
-    <ul>
-      <li><a href="#services">SERVICES</a></li>
-      <li><a href="#about">ABOUT</a></li>
-      <li><a href="#contact">CONTACT</a></li>
-    </ul>
-  </nav>
+    <div id="toastMsg" class="toast-msg"><i class="fas fa-check-circle text-green-400"></i> <span id="toastText">Done</span></div>
 
-  <!-- HERO -->
-  <section class="hero">
-    <div class="hero-badge">// CYBERSECURITY STARTUP — INDIA</div>
-    <h1>
-      Defending the<br>
-      <span class="hl">Digital</span> <span class="hl2">Frontier</span>
-    </h1>
-    <p class="hero-sub">
-      HerculeX Cyber Labs protects organizations against modern and emerging cyber threats. 
-      We specialize in Security Operations, Threat Intelligence &amp; Incident Response.
-    </p>
-    <div class="hero-cta">
-      <a href="#contact" class="btn btn-primary">GET PROTECTED</a>
-      <a href="#services" class="btn btn-outline">OUR SERVICES</a>
-    </div>
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-10">
+        <!-- Header with branding (keeping original identity) -->
+        <div class="flex flex-wrap justify-between items-center mb-8 gap-4">
+            <div>
+                <h1 class="text-3xl md:text-4xl font-extrabold tracking-tight bg-gradient-to-r from-slate-800 to-slate-600 bg-clip-text text-transparent">Herculex<span class="text-blue-600">CyberLabs</span></h1>
+                <p class="text-slate-500 mt-1">Next-Gen SOC as a Service • AI Threat Intelligence</p>
+            </div>
+            <div class="flex gap-2">
+                <span class="bg-slate-100 px-4 py-2 rounded-full text-sm font-medium shadow-sm"><i class="fas fa-shield-alt text-blue-600 mr-2"></i>ISO 27001 Ready</span>
+                <span class="bg-slate-100 px-4 py-2 rounded-full text-sm font-medium shadow-sm"><i class="fas fa-chart-line text-blue-600 mr-2"></i>24x7 SOC</span>
+            </div>
+        </div>
 
-    <div class="ticker">
-      <span class="ticker-inner">
-        [ THREAT MONITORING ACTIVE ] &nbsp;///&nbsp; ENDPOINT DETECTION &amp; RESPONSE &nbsp;///&nbsp; 
-        ZERO-DAY VULNERABILITY RESEARCH &nbsp;///&nbsp; SOC AS A SERVICE &nbsp;///&nbsp; 
-        PENETRATION TESTING &nbsp;///&nbsp; DMARC / SPF / DKIM HARDENING &nbsp;///&nbsp;
-        INCIDENT RESPONSE 24/7 &nbsp;///&nbsp;
-      </span>
-    </div>
-  </section>
+        <!-- SOC BUDGET CALCULATOR - Premium Core Tool -->
+        <div class="card-premium p-6 md:p-8 mb-10 fade-in" id="calculatorPanel">
+            <div class="flex flex-wrap justify-between items-start gap-3 border-b border-slate-200 pb-5 mb-6">
+                <div>
+                    <h2 class="text-2xl md:text-3xl font-bold text-slate-800 flex items-center gap-3">
+                        <i class="fas fa-chart-pie text-blue-600 text-3xl"></i> 
+                        SOC Budget Calculator
+                        <span class="text-xs bg-blue-100 text-blue-700 px-3 py-1.5 rounded-full font-semibold tracking-wide">Predictive Engine</span>
+                    </h2>
+                    <p class="text-slate-500 text-sm mt-1">Estimate quarterly & annual costs based on EPS + security modules. Transparent pricing.</p>
+                </div>
+                <div class="text-right text-xs text-slate-400 bg-slate-100 px-3 py-1 rounded-full"><i class="far fa-clock"></i> real-time AI cost model</div>
+            </div>
 
-  <!-- STATS -->
-  <div class="stats">
-    <div class="stat">
-      <span class="stat-num">24/7</span>
-      <span class="stat-label">Monitoring</span>
-    </div>
-    <div class="stat">
-      <span class="stat-num">100%</span>
-      <span class="stat-label">Commitment</span>
-    </div>
-    <div class="stat">
-      <span class="stat-num">&lt;1hr</span>
-      <span class="stat-label">Response Time</span>
-    </div>
-    <div class="stat">
-      <span class="stat-num">0</span>
-      <span class="stat-label">Compromises</span>
-    </div>
-  </div>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <!-- LEFT: Controls -->
+                <div class="space-y-6">
+                    <!-- EPS Slider + input with live update -->
+                    <div>
+                        <label class="block text-sm font-semibold text-slate-700 mb-2 flex justify-between"><span><i class="fas fa-tachometer-alt mr-1 text-blue-500"></i> Events Per Second (EPS) – SIEM Core</span> <span id="epsValueLabel" class="bg-slate-100 px-3 py-0.5 rounded-full text-blue-700 font-mono text-sm">1,000 eps</span></label>
+                        <input type="range" id="epsSlider" class="range-slider w-full" min="100" max="5000" step="50" value="1000">
+                        <div class="flex justify-between text-xs text-slate-400 mt-1 px-1"><span>100 EPS</span><span>2,500 EPS</span><span>5,000 EPS</span></div>
+                        <div class="mt-3 flex gap-2">
+                            <input type="number" id="epsNumber" value="1000" step="50" class="w-full border border-slate-300 rounded-xl px-4 py-2.5 text-sm focus:border-blue-400 focus:ring-1 focus:ring-blue-200">
+                        </div>
+                        <p class="text-xs text-slate-400 mt-1"><i class="fas fa-info-circle"></i> Base price: ₹12,00,000 / quarter for 1k EPS, scales linearly per EPS.</p>
+                    </div>
 
-  <!-- SERVICES -->
-  <div class="section" id="services">
-    <div class="section-label">// WHAT WE DO</div>
-    <h2 class="section-title">Core Services</h2>
-    <div class="services-grid">
-      <div class="card">
-        <div class="card-icon">🛡️</div>
-        <h3>Security Operations</h3>
-        <p>Round-the-clock SOC services with real-time threat detection, alerting, and triage by our experienced analysts.</p>
-      </div>
-      <div class="card">
-        <div class="card-icon">🔍</div>
-        <h3>Penetration Testing</h3>
-        <p>Simulated attacks on your infrastructure, applications, and networks to expose vulnerabilities before attackers do.</p>
-      </div>
-      <div class="card">
-        <div class="card-icon">🚨</div>
-        <h3>Incident Response</h3>
-        <p>Rapid containment, forensic investigation, and recovery support when a breach or cyberattack occurs.</p>
-      </div>
-      <div class="card">
-        <div class="card-icon">🧠</div>
-        <h3>Threat Intelligence</h3>
-        <p>Actionable intelligence on threat actors, TTPs, and indicators of compromise tailored to your industry.</p>
-      </div>
-      <div class="card">
-        <div class="card-icon">📧</div>
-        <h3>Email Security</h3>
-        <p>SPF, DKIM, DMARC hardening and anti-phishing controls to protect your domain from impersonation attacks.</p>
-      </div>
-      <div class="card">
-        <div class="card-icon">☁️</div>
-        <h3>Cloud Security</h3>
-        <p>Security posture assessments, misconfiguration audits, and hardening for AWS, Azure, and GCP environments.</p>
-      </div>
-    </div>
-  </div>
+                    <!-- SIEM pricing insight -->
+                    <div class="bg-gradient-to-r from-indigo-50 to-sky-50 p-4 rounded-2xl border border-indigo-100">
+                        <div class="flex gap-3 items-start">
+                            <i class="fas fa-chart-line text-indigo-500 text-xl mt-0.5"></i>
+                            <div>
+                                <h4 class="font-bold text-slate-800 text-sm">📊 SIEM pricing formula</h4>
+                                <p class="text-xs text-slate-600">Quarterly cost = (EPS × ₹1,200) <span class="font-mono">[Min: ₹1,20,000]</span>. Example: 1000 EPS = ₹12,00,000. Additional modules extra.</p>
+                            </div>
+                        </div>
+                    </div>
 
-  <!-- WHY US -->
-  <div class="section" id="about">
-    <div class="section-label">// WHY HERCULEX</div>
-    <h2 class="section-title">Built for the Modern Threat Landscape</h2>
-    <div class="why-grid">
-      <div class="why-item">
-        <div class="tag">EXPERTISE</div>
-        <p>Team of certified security professionals with deep hands-on experience across offensive and defensive security.</p>
-      </div>
-      <div class="why-item">
-        <div class="tag">SPEED</div>
-        <p>Sub-1-hour incident response SLAs. When you're under attack, every second counts.</p>
-      </div>
-      <div class="why-item">
-        <div class="tag">TAILORED</div>
-        <p>No one-size-fits-all. Every engagement is customized to your threat model, compliance needs, and budget.</p>
-      </div>
-      <div class="why-item">
-        <div class="tag">TRANSPARENT</div>
-        <p>Clear reporting, honest findings, and actionable remediation guidance — no jargon, no fluff.</p>
-      </div>
-    </div>
-  </div>
+                    <!-- ADD-ONS: premium modules -->
+                    <div>
+                        <label class="block text-sm font-bold text-slate-700 mb-3"><i class="fas fa-microchip mr-1 text-blue-600"></i> Select Security Services (Add-ons)</label>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            <label class="flex items-center gap-2 bg-white border border-slate-200 rounded-xl p-2.5 px-3 cursor-pointer hover:bg-slate-50 transition-all"><input type="checkbox" id="modThreatHunt" class="w-4 h-4 text-blue-600 rounded"> <span class="text-sm font-medium">🕵️ Threat Hunting <span class="text-gray-500 text-xs">(+₹1,20,000/qtr)</span></span></label>
+                            <label class="flex items-center gap-2 bg-white border border-slate-200 rounded-xl p-2.5 px-3 cursor-pointer hover:bg-slate-50"><input type="checkbox" id="modVulnMgmt" class="w-4 h-4 text-blue-600"> <span class="text-sm">🔍 Vuln. Scanning <span class="text-gray-500 text-xs">(+₹80,000/qtr)</span></span></label>
+                            <label class="flex items-center gap-2 bg-white border border-slate-200 rounded-xl p-2.5 px-3 cursor-pointer"><input type="checkbox" id="modSoar" class="w-4 h-4 text-blue-600"> <span class="text-sm">⚡ SOAR Automation <span class="text-gray-500 text-xs">(+₹2,00,000/qtr)</span></span></label>
+                            <label class="flex items-center gap-2 bg-white border border-slate-200 rounded-xl p-2.5 px-3 cursor-pointer"><input type="checkbox" id="modCompliance" class="w-4 h-4 text-blue-600"> <span class="text-sm">📜 Compliance Reporting <span class="text-gray-500 text-xs">(+₹95,000/qtr)</span></span></label>
+                            <label class="flex items-center gap-2 bg-white border border-slate-200 rounded-xl p-2.5 px-3 cursor-pointer"><input type="checkbox" id="mod24x7" class="w-4 h-4 text-blue-600"> <span class="text-sm">🛡️ 24x7 SOC Analyst <span class="text-gray-500 text-xs">(+₹3,50,000/qtr)</span></span></label>
+                            <label class="flex items-center gap-2 bg-white border border-slate-200 rounded-xl p-2.5 px-3 cursor-pointer"><input type="checkbox" id="modEdr" class="w-4 h-4 text-blue-600"> <span class="text-sm">💻 EDR/XDR Integration <span class="text-gray-500 text-xs">(+₹1,60,000/qtr)</span></span></label>
+                        </div>
+                    </div>
 
-  <!-- CTA -->
-  <div class="cta-section" id="contact">
-    <!-- SOC BUDGET CALCULATOR -->
-<div class="section" id="calculator">
-  <div class="section-label">// COST ESTIMATION</div>
-  <h2 class="section-title">SOC Budget Calculator</h2>
+                    <!-- Billing toggle: Quarterly / Annual with discount -->
+                    <div class="flex items-center gap-4 bg-gray-100 p-3 rounded-2xl">
+                        <span class="text-sm font-semibold">💰 Billing cycle:</span>
+                        <div class="flex bg-white rounded-full p-1 shadow-inner">
+                            <button id="quarterlyBtn" class="px-5 py-1.5 text-sm rounded-full font-semibold transition-all bg-blue-600 text-white shadow-md">Quarterly</button>
+                            <button id="annualBtn" class="px-5 py-1.5 text-sm rounded-full font-semibold text-slate-600 hover:bg-slate-100">Annual (Save 5%)</button>
+                        </div>
+                    </div>
+                </div>
 
-  <div class="card" style="max-width:800px;margin:auto;">
+                <!-- RIGHT: Live cost preview & interactive dashboard -->
+                <div class="bg-gradient-to-br from-slate-50 to-white rounded-2xl p-5 border border-slate-200 shadow-md">
+                    <h3 class="font-extrabold text-xl flex items-center gap-2"><i class="fas fa-rupee-sign text-green-700"></i> <span>Estimated SOC Investment</span></h3>
+                    <div class="mt-4 space-y-3">
+                        <div class="flex justify-between border-b border-slate-200 pb-2"><span class="text-slate-600">🔹 SIEM Base (EPS adjusted)</span><span id="siemBaseCost" class="font-mono font-bold text-slate-800">₹0</span></div>
+                        <div class="flex justify-between border-b border-slate-200 pb-2"><span class="text-slate-600">🧩 Add-ons total</span><span id="addonsCost" class="font-mono font-semibold">₹0</span></div>
+                        <div class="flex justify-between bg-blue-50 p-3 rounded-xl mt-2"><span class="font-bold text-slate-700">💰 Total (Quarterly)</span><span id="totalQuarterly" class="text-blue-700 text-xl font-extrabold">₹0</span></div>
+                        <div class="flex justify-between text-md bg-indigo-50 p-2 rounded-xl"><span class="font-semibold">📆 Annual estimate (5% discount)</span><span id="totalAnnual" class="font-mono font-bold text-indigo-700">₹0</span></div>
+                        <div class="text-xs text-slate-400 flex items-center gap-1 mt-1"><i class="fas fa-check-circle text-green-500"></i> All prices in INR, taxes extra as applicable.</div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-3 mt-6">
+                        <button id="generatePDFBtn" class="btn-gradient text-white px-4 py-2.5 rounded-xl text-sm font-semibold flex items-center justify-center gap-2 shadow-md"><i class="fas fa-file-pdf"></i> Export PDF</button>
+                        <button id="showLeadFormBtn" class="bg-white border border-blue-300 text-blue-700 px-4 py-2.5 rounded-xl text-sm font-semibold flex items-center justify-center gap-2 hover:bg-blue-50 transition"><i class="fas fa-envelope"></i> Request Quote</button>
+                    </div>
+                    <p class="text-[11px] text-center text-slate-400 mt-4">✨ Instant prediction • share PDF with client</p>
+                </div>
+            </div>
+        </div>
 
-    <div class="services-grid" style="grid-template-columns: repeat(auto-fit,minmax(250px,1fr));">
+        <!-- LEAD FORM MODAL (No backend, stores locally and shows toast) -->
+        <div id="leadModal" class="fixed inset-0 flex items-center justify-center z-50 hidden transition-all duration-300 modal-bg">
+            <div class="bg-white rounded-2xl max-w-md w-full mx-4 shadow-2xl transform transition-all scale-95 p-6">
+                <div class="flex justify-between items-center border-b pb-3 mb-4">
+                    <h3 class="text-xl font-bold flex gap-2"><i class="fas fa-user-plus text-blue-600"></i>Request SOC Consultation</h3>
+                    <button id="closeModalBtn" class="text-gray-400 hover:text-gray-600 text-2xl">&times;</button>
+                </div>
+                <form id="leadForm">
+                    <div class="space-y-4">
+                        <input type="text" id="leadName" placeholder="Full Name *" required class="w-full border border-slate-300 rounded-xl px-4 py-2.5 text-sm">
+                        <input type="email" id="leadEmail" placeholder="Email Address *" required class="w-full border border-slate-300 rounded-xl px-4 py-2.5 text-sm">
+                        <input type="tel" id="leadPhone" placeholder="Phone Number" class="w-full border border-slate-300 rounded-xl px-4 py-2.5 text-sm">
+                        <textarea id="leadMessage" rows="2" placeholder="Tell us about your SOC requirements / EPS expectations" class="w-full border border-slate-300 rounded-xl px-4 py-2.5 text-sm"></textarea>
+                        <button type="submit" class="w-full btn-gradient text-white py-2.5 rounded-xl font-semibold flex items-center justify-center gap-2"><i class="fas fa-paper-plane"></i> Send Lead (No spam)</button>
+                    </div>
+                    <p class="text-xs text-slate-400 text-center mt-4"><i class="fas fa-lock"></i> Your info is safe, our sales team will reach out.</p>
+                </form>
+            </div>
+        </div>
 
-      <label><input type="checkbox" value="8000"> SIEM & Log Management</label>
-      <label><input type="checkbox" value="6000"> Endpoint Security (EDR)</label>
-      <label><input type="checkbox" value="7000"> Network Monitoring (NDR)</label>
-      <label><input type="checkbox" value="5000"> Vulnerability Management</label>
-      <label><input type="checkbox" value="4000"> Compliance & Reporting</label>
-      <label><input type="checkbox" value="9000"> Incident Response</label>
-      <label><input type="checkbox" value="6000"> Threat Intelligence</label>
-      <label><input type="checkbox" value="7000"> UEBA / Analytics</label>
-      <label><input type="checkbox" value="5000"> Data Protection (DLP)</label>
-      <label><input type="checkbox" value="4000"> Asset Visibility</label>
-      <label><input type="checkbox" value="3000"> Alerting & Notification</label>
-      <label><input type="checkbox" value="3000"> Access Control / SSO</label>
-      <label><input type="checkbox" value="4000"> Dashboards & Visualization</label>
-      <label><input type="checkbox" value="5000"> Integration & Scalability</label>
+    </main>
 
-    </div>
-
-    <div style="margin-top:30px;text-align:center;">
-      <h2 id="totalCost" style="color:#00ffe0;">₹0</h2>
-      <p id="planType" style="color:#4a7a8a;"></p>
-
-      <a href="mailto:founder@herculexcyberlabs.com?subject=SOC Quote Request"
-         class="btn btn-primary"
-         style="margin-top:15px;display:inline-block;">
-         GET EXACT QUOTE →
-      </a>
-    </div>
-
-  </div>
-</div>
-
-<script>
-const services = document.querySelectorAll('#calculator input');
-
-function updateCost() {
-  let total = 3000; // base cost
-  let count = 0;
-
-  services.forEach(s => {
-    if (s.checked) {
-      total += parseInt(s.value);
-      count++;
-    }
-  });
-
-  document.getElementById("totalCost").innerText = "₹" + total;
-
-  let plan = "Basic SOC";
-  if (count > 5) plan = "Advanced SOC";
-  if (count > 9) plan = "Enterprise SOC";
-
-  document.getElementById("planType").innerText = "Recommended: " + plan;
-}
-
-services.forEach(s => s.addEventListener("change", updateCost));
-
-updateCost();
-</script>
-    <h2>Ready to Secure Your Organization?</h2>
-    <p>// Reach out and let's discuss your security posture</p>
-    <a href="mailto:founder@herculexcyberlabs.com" class="btn btn-primary">
-      CONTACT US →
-    </a>
-  </div>
-
-  <!-- FOOTER -->
-  <footer>
-    <p>© 2026 HerculeX Cyber Labs &nbsp;|&nbsp; 
-      <a href="mailto:founder@herculexcyberlabs.com">founder@herculexcyberlabs.com</a> 
-      &nbsp;|&nbsp; herculexcyberlabs.com
-      &nbsp;|&nbsp; <span class="blink">▮</span>
-    </p>
-  </footer>
-
+    <script>
+        // ---------- PRICING CONSTANTS (based on 1k EPS = ₹12,00,000 per quarter, linear scaling) ----------
+        const BASE_EPS_REF = 1000;        // reference EPS
+        const BASE_QUARTERLY_PRICE = 1200000;  // ₹12,00,000 for 1000 EPS
+        
+        // Add-ons quarterly prices (INR)
+        const ADDON_PRICES = {
+            modThreatHunt: 120000,
+            modVulnMgmt: 80000,
+            modSoar: 200000,
+            modCompliance: 95000,
+            mod24x7: 350000,
+            modEdr: 160000
+        };
+        
+        const ANNUAL_DISCOUNT = 0.05;   // 5% discount on annual (4 * quarterly * 0.95)
+        
+        // DOM elements
+        const epsSlider = document.getElementById('epsSlider');
+        const epsNumber = document.getElementById('epsNumber');
+        const epsValueLabel = document.getElementById('epsValueLabel');
+        const siemBaseSpan = document.getElementById('siemBaseCost');
+        const addonsCostSpan = document.getElementById('addonsCost');
+        const totalQuarterlySpan = document.getElementById('totalQuarterly');
+        const totalAnnualSpan = document.getElementById('totalAnnual');
+        
+        // billing mode: 'quarterly' or 'annual'
+        let billingMode = 'quarterly';
+        const quarterlyBtn = document.getElementById('quarterlyBtn');
+        const annualBtn = document.getElementById('annualBtn');
+        
+        // Helper: format INR
+        function formatINR(amount) {
+            return '₹' + amount.toLocaleString('en-IN');
+        }
+        
+        // Calculate SIEM base cost based on EPS (linear scaling)
+        function calculateSiemBase(eps) {
+            // price per EPS = BASE_QUARTERLY_PRICE / BASE_EPS_REF
+            const perEpsRate = BASE_QUARTERLY_PRICE / BASE_EPS_REF;  // 1200 per EPS
+            let rawCost = eps * perEpsRate;
+            // Minimum quarterly floor (optional but professional) : min ₹1,20,000 for very low EPS
+            return Math.max(rawCost, 120000);
+        }
+        
+        // get total add-ons cost quarterly
+        function getAddonsTotal() {
+            let total = 0;
+            for (const [id, price] of Object.entries(ADDON_PRICES)) {
+                const checkbox = document.getElementById(id);
+                if (checkbox && checkbox.checked) total += price;
+            }
+            return total;
+        }
+        
+        // full update UI: recalc everything
+        function updateBudget() {
+            let eps = parseFloat(epsSlider.value);
+            if (isNaN(eps)) eps = 1000;
+            eps = Math.min(5000, Math.max(100, eps));
+            epsSlider.value = eps;
+            epsNumber.value = eps;
+            epsValueLabel.innerText = eps.toLocaleString() + ' eps';
+            
+            const siemQuarterly = calculateSiemBase(eps);
+            const addonsQuarterly = getAddonsTotal();
+            const totalQuarterlyRaw = siemQuarterly + addonsQuarterly;
+            
+            // update displays
+            siemBaseSpan.innerText = formatINR(siemQuarterly);
+            addonsCostSpan.innerText = formatINR(addonsQuarterly);
+            
+            let finalQuarterlyDisplay = totalQuarterlyRaw;
+            let annualEstimate = totalQuarterlyRaw * 4;
+            if (billingMode === 'annual') {
+                // apply 5% discount on annual total
+                annualEstimate = annualEstimate * (1 - ANNUAL_DISCOUNT);
+                finalQuarterlyDisplay = totalQuarterlyRaw; // still show quarterly base
+            } else {
+                annualEstimate = totalQuarterlyRaw * 4 * (1 - ANNUAL_DISCOUNT); // show discounted annual anyway
+            }
+            
+            totalQuarterlySpan.innerText = formatINR(totalQuarterlyRaw);
+            totalAnnualSpan.innerText = formatINR(annualEstimate);
+            
+            // highlight toggle active style
+            if (billingMode === 'quarterly') {
+                quarterlyBtn.classList.add('bg-blue-600', 'text-white', 'shadow-md');
+                quarterlyBtn.classList.remove('bg-white', 'text-slate-600');
+                annualBtn.classList.remove('bg-blue-600', 'text-white', 'shadow-md');
+                annualBtn.classList.add('bg-white', 'text-slate-600');
+            } else {
+                annualBtn.classList.add('bg-blue-600', 'text-white', 'shadow-md');
+                annualBtn.classList.remove('bg-white', 'text-slate-600');
+                quarterlyBtn.classList.remove('bg-blue-600', 'text-white', 'shadow-md');
+                quarterlyBtn.classList.add('bg-white', 'text-slate-600');
+            }
+        }
+        
+        // Event listeners
+        epsSlider.addEventListener('input', (e) => { updateBudget(); });
+        epsNumber.addEventListener('input', (e) => {
+            let val = parseFloat(e.target.value);
+            if (!isNaN(val)) {
+                val = Math.min(5000, Math.max(100, val));
+                epsSlider.value = val;
+                updateBudget();
+            }
+        });
+        
+        // attach listeners to all checkboxes
+        const checkboxes = ['modThreatHunt', 'modVulnMgmt', 'modSoar', 'modCompliance', 'mod24x7', 'modEdr'];
+        checkboxes.forEach(id => {
+            const cb = document.getElementById(id);
+            if (cb) cb.addEventListener('change', () => updateBudget());
+        });
+        
+        quarterlyBtn.addEventListener('click', () => { billingMode = 'quarterly'; updateBudget(); });
+        annualBtn.addEventListener('click', () => { billingMode = 'annual'; updateBudget(); });
+        
+        // --- PDF GENERATOR (Premium look capturing calculator panel and results) ---
+        document.getElementById('generatePDFBtn').addEventListener('click', async () => {
+            const element = document.getElementById('calculatorPanel');
+            if (!element) return;
+            // Show loading toast
+            showToast('Generating PDF report...', 'info');
+            try {
+                const canvas = await html2canvas(element, {
+                    scale: 2,
+                    backgroundColor: '#ffffff',
+                    logging: false,
+                    useCORS: true
+                });
+                const imgData = canvas.toDataURL('image/png');
+                const { jsPDF } = window.jspdf;
+                const pdf = new jsPDF('p', 'mm', 'a4');
+                const pdfWidth = pdf.internal.pageSize.getWidth();
+                const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+                pdf.addImage(imgData, 'PNG', 0, 10, pdfWidth, pdfHeight, undefined, 'FAST');
+                pdf.save(`SOC_Budget_Estimate_${new Date().toISOString().slice(0,19)}.pdf`);
+                showToast('PDF exported successfully!', 'success');
+            } catch (err) {
+                console.error(err);
+                showToast('PDF error, try again', 'error');
+            }
+        });
+        
+        // ---- LEAD FORM MODAL (no backend, frontend only store + notification) ----
+        const modal = document.getElementById('leadModal');
+        const showLeadBtn = document.getElementById('showLeadFormBtn');
+        const closeModalBtn = document.getElementById('closeModalBtn');
+        const leadForm = document.getElementById('leadForm');
+        
+        function showToast(message, type = 'success') {
+            const toast = document.getElementById('toastMsg');
+            const toastText = document.getElementById('toastText');
+            toastText.innerText = message;
+            toast.style.opacity = '1';
+            if (type === 'error') {
+                toast.style.background = '#b91c1c';
+            } else {
+                toast.style.background = '#1f2937';
+            }
+            setTimeout(() => {
+                toast.style.opacity = '0';
+            }, 2800);
+        }
+        
+        showLeadBtn.addEventListener('click', () => {
+            modal.classList.remove('hidden');
+        });
+        closeModalBtn.addEventListener('click', () => {
+            modal.classList.add('hidden');
+        });
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) modal.classList.add('hidden');
+        });
+        
+        leadForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const name = document.getElementById('leadName').value.trim();
+            const email = document.getElementById('leadEmail').value.trim();
+            const phone = document.getElementById('leadPhone').value.trim();
+            const message = document.getElementById('leadMessage').value.trim();
+            if (!name || !email) {
+                showToast('Please fill name & email', 'error');
+                return;
+            }
+            // store in localStorage for demo (no backend but you can view later)
+            const leadData = { name, email, phone, message, timestamp: new Date().toISOString(), eps: epsSlider.value, addons: getAddonsTotal() };
+            let leads = JSON.parse(localStorage.getItem('soc_leads') || '[]');
+            leads.push(leadData);
+            localStorage.setItem('soc_leads', JSON.stringify(leads));
+            showToast(`Thanks ${name}! Our SOC experts will contact you.`, 'success');
+            leadForm.reset();
+            modal.classList.add('hidden');
+        });
+        
+        // Initial update
+        updateBudget();
+        
+        // Additional animation for premium feel
+        console.log('SOC Budget Calculator ready | HerculexCyberLabs');
+    </script>
+    <!-- footnote: all features work on GitHub pages, no server needed -->
+    <footer class="text-center text-slate-400 text-xs py-6 border-t mt-8 max-w-7xl mx-auto">
+        <p><i class="fas fa-chart-simple"></i> SOC Budget Predictor v2.0 • Pricing model based on 1k EPS = ₹12L/quarter • Add-ons reflect market standards • <i class="fas fa-file-pdf"></i> PDF reports & lead form are front-end only</p>
+    </footer>
 </body>
 </html>
