@@ -1,257 +1,614 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>HerculeX Cyber Labs</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>HerculeX Cyber Labs</title>
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet">
+    :root {
+      --bg: #020b14;
+      --surface: #041624;
+      --accent: #00ffe0;
+      --accent2: #0077ff;
+      --danger: #ff003c;
+      --text: #c8dde8;
+      --muted: #4a7a8a;
+      --mono: 'Share Tech Mono', monospace;
+      --sans: 'Rajdhani', sans-serif;
+    }
 
-<style>
-:root{
---bg:#020b14;
---surface:#041624;
---accent:#00ffe0;
---text:#c8dde8;
---muted:#4a7a8a;
-}
+    html { scroll-behavior: smooth; }
 
-body{
-background:var(--bg);
-color:var(--text);
-font-family:'Rajdhani',sans-serif;
-margin:0;
-}
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--sans);
+      font-size: 16px;
+      overflow-x: hidden;
+    }
 
-/* SECTION */
-.section{
-padding:80px 20px;
-max-width:1100px;
-margin:auto;
-}
+    /* ── GRID BACKGROUND ── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(0,255,224,.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,255,224,.03) 1px, transparent 1px);
+      background-size: 40px 40px;
+      pointer-events: none;
+      z-index: 0;
+    }
 
-/* GRID */
-.container{
-display:grid;
-grid-template-columns:1fr 1fr;
-gap:40px;
-}
+    /* ── SCANLINES ── */
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 2px,
+        rgba(0,0,0,.15) 2px,
+        rgba(0,0,0,.15) 4px
+      );
+      pointer-events: none;
+      z-index: 0;
+    }
 
-/* LEFT PANEL */
-.left h2{
-font-size:2.5rem;
-line-height:1.2;
-}
+    /* ── NAV ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1rem 2.5rem;
+      background: rgba(2,11,20,.85);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(0,255,224,.1);
+    }
 
-.left span{color:var(--accent);}
+    .logo {
+      font-family: var(--mono);
+      font-size: 1.1rem;
+      color: var(--accent);
+      letter-spacing: 2px;
+      text-decoration: none;
+    }
 
-.left ul{
-margin-top:20px;
-list-style:none;
-}
+    .logo span { color: var(--danger); }
 
-.left li{
-margin:10px 0;
-}
+    nav ul {
+      list-style: none;
+      display: flex;
+      gap: 2rem;
+    }
 
-/* FORM */
-.card{
-background:rgba(255,255,255,0.03);
-padding:25px;
-border-radius:12px;
-border:1px solid rgba(0,255,224,0.2);
-transition:0.3s;
-}
+    nav ul a {
+      font-family: var(--mono);
+      font-size: .8rem;
+      color: var(--muted);
+      text-decoration: none;
+      letter-spacing: 1px;
+      transition: color .2s;
+    }
 
-.card:hover{
-box-shadow:0 0 25px rgba(0,255,224,0.2);
-}
+    nav ul a:hover { color: var(--accent); }
 
-input,select{
-width:100%;
-padding:10px;
-margin:8px 0;
-background:#020b14;
-border:1px solid #00ffe0;
-color:white;
-border-radius:6px;
-}
+    /* ── HERO ── */
+    .hero {
+      position: relative;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 6rem 2rem 4rem;
+      z-index: 1;
+    }
 
-.row{
-display:flex;
-gap:10px;
-}
+    .hero-badge {
+      font-family: var(--mono);
+      font-size: .7rem;
+      letter-spacing: 3px;
+      color: var(--accent);
+      border: 1px solid rgba(0,255,224,.3);
+      padding: .35rem 1rem;
+      border-radius: 2px;
+      margin-bottom: 2rem;
+      animation: fadeDown .6s ease both;
+    }
 
-button{
-width:100%;
-padding:12px;
-background:#00ffe0;
-border:none;
-cursor:pointer;
-border-radius:8px;
-transition:0.3s;
-}
+    .hero h1 {
+      font-family: var(--sans);
+      font-size: clamp(2.5rem, 7vw, 5.5rem);
+      font-weight: 700;
+      line-height: 1.05;
+      letter-spacing: -1px;
+      animation: fadeDown .7s .1s ease both;
+    }
 
-button:hover{
-box-shadow:0 0 20px rgba(0,255,224,0.6);
-}
+    .hero h1 .hl { color: var(--accent); }
+    .hero h1 .hl2 { color: var(--accent2); }
 
-/* COST */
-#totalCost{
-font-size:1.2rem;
-margin:10px 0;
-}
+    .hero-sub {
+      margin-top: 1.5rem;
+      font-family: var(--mono);
+      font-size: .95rem;
+      color: var(--muted);
+      max-width: 560px;
+      line-height: 1.7;
+      animation: fadeDown .8s .2s ease both;
+    }
 
-/* MOBILE */
-@media(max-width:768px){
-.container{grid-template-columns:1fr;}
-}
-</style>
+    .hero-cta {
+      margin-top: 2.5rem;
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      justify-content: center;
+      animation: fadeDown .9s .3s ease both;
+    }
+
+    .btn {
+      font-family: var(--mono);
+      font-size: .8rem;
+      letter-spacing: 1px;
+      padding: .75rem 2rem;
+      border-radius: 2px;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all .2s;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: var(--bg);
+      border: none;
+      font-weight: bold;
+    }
+
+    .btn-primary:hover {
+      box-shadow: 0 0 20px rgba(0,255,224,.5);
+      transform: translateY(-2px);
+    }
+
+    .btn-outline {
+      background: transparent;
+      color: var(--accent);
+      border: 1px solid rgba(0,255,224,.4);
+    }
+
+    .btn-outline:hover {
+      border-color: var(--accent);
+      box-shadow: 0 0 15px rgba(0,255,224,.2);
+    }
+
+    /* ── TERMINAL TICKER ── */
+    .ticker {
+      position: absolute;
+      bottom: 2.5rem;
+      left: 50%;
+      transform: translateX(-50%);
+      font-family: var(--mono);
+      font-size: .75rem;
+      color: var(--muted);
+      white-space: nowrap;
+      overflow: hidden;
+      width: min(600px, 90vw);
+    }
+
+    .ticker-inner {
+      display: inline-block;
+      animation: ticker 18s linear infinite;
+    }
+
+    @keyframes ticker {
+      0% { transform: translateX(100%); }
+      100% { transform: translateX(-100%); }
+    }
+
+    /* ── STATS BAR ── */
+    .stats {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      justify-content: center;
+      gap: 0;
+      flex-wrap: wrap;
+      border-top: 1px solid rgba(0,255,224,.08);
+      border-bottom: 1px solid rgba(0,255,224,.08);
+      background: rgba(4,22,36,.6);
+    }
+
+    .stat {
+      padding: 2rem 3rem;
+      text-align: center;
+      border-right: 1px solid rgba(0,255,224,.08);
+      flex: 1;
+      min-width: 160px;
+    }
+
+    .stat:last-child { border-right: none; }
+
+    .stat-num {
+      font-family: var(--mono);
+      font-size: 2rem;
+      color: var(--accent);
+      display: block;
+    }
+
+    .stat-label {
+      font-size: .8rem;
+      color: var(--muted);
+      letter-spacing: 2px;
+      margin-top: .3rem;
+      text-transform: uppercase;
+    }
+
+    /* ── SERVICES ── */
+    .section {
+      position: relative;
+      z-index: 1;
+      padding: 6rem 2rem;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .section-label {
+      font-family: var(--mono);
+      font-size: .75rem;
+      letter-spacing: 3px;
+      color: var(--accent2);
+      margin-bottom: .75rem;
+    }
+
+    .section-title {
+      font-size: clamp(1.8rem, 4vw, 2.8rem);
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      margin-bottom: 3rem;
+    }
+
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid rgba(0,255,224,.08);
+      border-radius: 4px;
+      padding: 2rem;
+      transition: all .25s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 3px; height: 100%;
+      background: var(--accent);
+      transform: scaleY(0);
+      transform-origin: bottom;
+      transition: transform .3s;
+    }
+
+    .card:hover { border-color: rgba(0,255,224,.25); transform: translateY(-4px); }
+    .card:hover::before { transform: scaleY(1); }
+
+    .card-icon {
+      font-size: 1.8rem;
+      margin-bottom: 1rem;
+    }
+
+    .card h3 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: .6rem;
+      letter-spacing: .5px;
+    }
+
+    .card p {
+      font-size: .9rem;
+      color: var(--muted);
+      line-height: 1.65;
+    }
+
+    /* ── WHY US ── */
+    .why-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1rem;
+    }
+
+    .why-item {
+      padding: 1.5rem;
+      border: 1px solid rgba(0,255,224,.06);
+      border-radius: 4px;
+      background: rgba(4,22,36,.4);
+    }
+
+    .why-item .tag {
+      font-family: var(--mono);
+      font-size: .7rem;
+      color: var(--accent);
+      letter-spacing: 2px;
+      margin-bottom: .5rem;
+    }
+
+    .why-item p {
+      font-size: .9rem;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    /* ── CTA SECTION ── */
+    .cta-section {
+      position: relative;
+      z-index: 1;
+      text-align: center;
+      padding: 5rem 2rem;
+      background: linear-gradient(135deg, rgba(0,119,255,.05), rgba(0,255,224,.05));
+      border-top: 1px solid rgba(0,255,224,.08);
+      border-bottom: 1px solid rgba(0,255,224,.08);
+    }
+
+    .cta-section h2 {
+      font-size: clamp(1.6rem, 4vw, 2.5rem);
+      font-weight: 700;
+      margin-bottom: 1rem;
+    }
+
+    .cta-section p {
+      color: var(--muted);
+      font-family: var(--mono);
+      font-size: .85rem;
+      margin-bottom: 2rem;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      position: relative;
+      z-index: 1;
+      padding: 2rem;
+      text-align: center;
+      font-family: var(--mono);
+      font-size: .75rem;
+      color: var(--muted);
+      border-top: 1px solid rgba(0,255,224,.06);
+    }
+
+    footer a { color: var(--accent); text-decoration: none; }
+
+    /* ── ANIMATIONS ── */
+    @keyframes fadeDown {
+      from { opacity: 0; transform: translateY(-20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── CURSOR BLINK ── */
+    .blink {
+      animation: blink 1s step-end infinite;
+      color: var(--accent);
+    }
+    @keyframes blink { 50% { opacity: 0; } }
+  </style>
 </head>
-
 <body>
 
-<div class="section">
+  <!-- NAV -->
+  <nav>
+    <a href="#" class="logo">HERCULE<span>X</span>_LABS</a>
+    <ul>
+      <li><a href="#services">SERVICES</a></li>
+      <li><a href="#about">ABOUT</a></li>
+      <li><a href="#contact">CONTACT</a></li>
+    </ul>
+  </nav>
 
-<div class="container">
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-badge">// CYBERSECURITY STARTUP — INDIA</div>
+    <h1>
+      Defending the<br>
+      <span class="hl">Digital</span> <span class="hl2">Frontier</span>
+    </h1>
+    <p class="hero-sub">
+      HerculeX Cyber Labs protects organizations against modern and emerging cyber threats. 
+      We specialize in Security Operations, Threat Intelligence &amp; Incident Response.
+    </p>
+    <div class="hero-cta">
+      <a href="#contact" class="btn btn-primary">GET PROTECTED</a>
+      <a href="#services" class="btn btn-outline">OUR SERVICES</a>
+    </div>
 
-<!-- LEFT -->
-<div class="left">
+    <div class="ticker">
+      <span class="ticker-inner">
+        [ THREAT MONITORING ACTIVE ] &nbsp;///&nbsp; ENDPOINT DETECTION &amp; RESPONSE &nbsp;///&nbsp; 
+        ZERO-DAY VULNERABILITY RESEARCH &nbsp;///&nbsp; SOC AS A SERVICE &nbsp;///&nbsp; 
+        PENETRATION TESTING &nbsp;///&nbsp; DMARC / SPF / DKIM HARDENING &nbsp;///&nbsp;
+        INCIDENT RESPONSE 24/7 &nbsp;///&nbsp;
+      </span>
+    </div>
+  </section>
 
-<h2>Get SOC <span>Protection</span><br>Estimate Instantly</h2>
+  <!-- STATS -->
+  <div class="stats">
+    <div class="stat">
+      <span class="stat-num">24/7</span>
+      <span class="stat-label">Monitoring</span>
+    </div>
+    <div class="stat">
+      <span class="stat-num">100%</span>
+      <span class="stat-label">Commitment</span>
+    </div>
+    <div class="stat">
+      <span class="stat-num">&lt;1hr</span>
+      <span class="stat-label">Response Time</span>
+    </div>
+    <div class="stat">
+      <span class="stat-num">0</span>
+      <span class="stat-label">Compromises</span>
+    </div>
+  </div>
 
-<p style="color:#4a7a8a;">
-Calculate your SOC cost in seconds based on real enterprise pricing.
-</p>
+  <!-- SERVICES -->
+  <div class="section" id="services">
+    <div class="section-label">// WHAT WE DO</div>
+    <h2 class="section-title">Core Services</h2>
+    <div class="services-grid">
+      <div class="card">
+        <div class="card-icon">🛡️</div>
+        <h3>Security Operations</h3>
+        <p>Round-the-clock SOC services with real-time threat detection, alerting, and triage by our experienced analysts.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">🔍</div>
+        <h3>Penetration Testing</h3>
+        <p>Simulated attacks on your infrastructure, applications, and networks to expose vulnerabilities before attackers do.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">🚨</div>
+        <h3>Incident Response</h3>
+        <p>Rapid containment, forensic investigation, and recovery support when a breach or cyberattack occurs.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">🧠</div>
+        <h3>Threat Intelligence</h3>
+        <p>Actionable intelligence on threat actors, TTPs, and indicators of compromise tailored to your industry.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">📧</div>
+        <h3>Email Security</h3>
+        <p>SPF, DKIM, DMARC hardening and anti-phishing controls to protect your domain from impersonation attacks.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">☁️</div>
+        <h3>Cloud Security</h3>
+        <p>Security posture assessments, misconfiguration audits, and hardening for AWS, Azure, and GCP environments.</p>
+      </div>
+    </div>
+  </div>
 
-<label>EPS</label>
-<input type="number" id="eps" value="1000">
+  <!-- WHY US -->
+  <div class="section" id="about">
+    <div class="section-label">// WHY HERCULEX</div>
+    <h2 class="section-title">Built for the Modern Threat Landscape</h2>
+    <div class="why-grid">
+      <div class="why-item">
+        <div class="tag">EXPERTISE</div>
+        <p>Team of certified security professionals with deep hands-on experience across offensive and defensive security.</p>
+      </div>
+      <div class="why-item">
+        <div class="tag">SPEED</div>
+        <p>Sub-1-hour incident response SLAs. When you're under attack, every second counts.</p>
+      </div>
+      <div class="why-item">
+        <div class="tag">TAILORED</div>
+        <p>No one-size-fits-all. Every engagement is customized to your threat model, compliance needs, and budget.</p>
+      </div>
+      <div class="why-item">
+        <div class="tag">TRANSPARENT</div>
+        <p>Clear reporting, honest findings, and actionable remediation guidance — no jargon, no fluff.</p>
+      </div>
+    </div>
+  </div>
 
-<label>Assets</label>
-<input type="number" id="assets" value="100">
+  <!-- CTA -->
+  <div class="cta-section" id="contact">
+    <!-- SOC BUDGET CALCULATOR -->
+<div class="section" id="calculator">
+  <div class="section-label">// COST ESTIMATION</div>
+  <h2 class="section-title">SOC Budget Calculator</h2>
 
-<ul>
-<li><input type="checkbox" value="siem"> SIEM & Log Management</li>
-<li><input type="checkbox" value="endpoint"> Endpoint Security</li>
-<li><input type="checkbox" value="network"> Network Monitoring</li>
-<li><input type="checkbox" value="vuln"> Vulnerability Mgmt</li>
-<li><input type="checkbox" value="ir"> Incident Response</li>
-<li><input type="checkbox" value="ti"> Threat Intelligence</li>
-<li><input type="checkbox" value="compliance"> Compliance</li>
-<li><input type="checkbox" value="ueba"> UEBA</li>
-<li><input type="checkbox" value="dlp"> DLP</li>
-<li><input type="checkbox" value="dashboard"> Dashboard</li>
-<li><input type="checkbox" value="integration"> Integration</li>
-</ul>
+  <div class="card" style="max-width:800px;margin:auto;">
 
-</div>
+    <div class="services-grid" style="grid-template-columns: repeat(auto-fit,minmax(250px,1fr));">
 
-<!-- RIGHT -->
-<div class="card">
+      <label><input type="checkbox" value="8000"> SIEM & Log Management</label>
+      <label><input type="checkbox" value="6000"> Endpoint Security (EDR)</label>
+      <label><input type="checkbox" value="7000"> Network Monitoring (NDR)</label>
+      <label><input type="checkbox" value="5000"> Vulnerability Management</label>
+      <label><input type="checkbox" value="4000"> Compliance & Reporting</label>
+      <label><input type="checkbox" value="9000"> Incident Response</label>
+      <label><input type="checkbox" value="6000"> Threat Intelligence</label>
+      <label><input type="checkbox" value="7000"> UEBA / Analytics</label>
+      <label><input type="checkbox" value="5000"> Data Protection (DLP)</label>
+      <label><input type="checkbox" value="4000"> Asset Visibility</label>
+      <label><input type="checkbox" value="3000"> Alerting & Notification</label>
+      <label><input type="checkbox" value="3000"> Access Control / SSO</label>
+      <label><input type="checkbox" value="4000"> Dashboards & Visualization</label>
+      <label><input type="checkbox" value="5000"> Integration & Scalability</label>
 
-<h3>Estimated Cost</h3>
+    </div>
 
-<div id="totalCost"></div>
-<p id="planType"></p>
+    <div style="margin-top:30px;text-align:center;">
+      <h2 id="totalCost" style="color:#00ffe0;">₹0</h2>
+      <p id="planType" style="color:#4a7a8a;"></p>
 
-<hr>
+      <a href="mailto:founder@herculexcyberlabs.com?subject=SOC Quote Request"
+         class="btn btn-primary"
+         style="margin-top:15px;display:inline-block;">
+         GET EXACT QUOTE →
+      </a>
+    </div>
 
-<h3>Get Quote</h3>
-
-<input id="name" placeholder="Full Name">
-<input id="email" placeholder="Email">
-
-<div class="row">
-<input id="company" placeholder="Company">
-<input id="phone" placeholder="Phone">
-</div>
-
-<button onclick="submitForm()">Request Quote →</button>
-
-</div>
-
-</div>
+  </div>
 </div>
 
 <script>
+const services = document.querySelectorAll('#calculator input');
 
-// CALCULATION
-const services=document.querySelectorAll("input[type=checkbox]");
+function updateCost() {
+  let total = 3000; // base cost
+  let count = 0;
 
-function updateCost(){
+  services.forEach(s => {
+    if (s.checked) {
+      total += parseInt(s.value);
+      count++;
+    }
+  });
 
-let eps=parseInt(document.getElementById("eps").value)||0;
-let assets=parseInt(document.getElementById("assets").value)||0;
+  document.getElementById("totalCost").innerText = "₹" + total;
 
-let monthly=0;
+  let plan = "Basic SOC";
+  if (count > 5) plan = "Advanced SOC";
+  if (count > 9) plan = "Enterprise SOC";
 
-services.forEach(s=>{
-if(s.checked){
-
-switch(s.value){
-case "siem": monthly+=eps*400; break;
-case "endpoint": monthly+=assets*100; break;
-case "network": monthly+=assets*80; break;
-case "vuln": monthly+=assets*60; break;
-case "ir": monthly+=80000; break;
-case "ti": monthly+=50000; break;
-case "compliance": monthly+=30000; break;
-case "ueba": monthly+=60000; break;
-case "dlp": monthly+=50000; break;
-case "dashboard": monthly+=20000; break;
-case "integration": monthly+=40000; break;
-}
-}
-});
-
-let quarterly=monthly*3;
-let yearly=monthly*12;
-
-document.getElementById("totalCost").innerHTML=
-`Monthly: ₹${monthly.toLocaleString()}<br>
-Quarterly: ₹${quarterly.toLocaleString()}<br>
-Yearly: ₹${yearly.toLocaleString()}`;
-
-let plan="Basic SOC";
-if(monthly>300000) plan="Advanced SOC";
-if(monthly>800000) plan="Enterprise SOC";
-
-document.getElementById("planType").innerText="Recommended: "+plan;
+  document.getElementById("planType").innerText = "Recommended: " + plan;
 }
 
-// EVENTS
-document.querySelectorAll("input").forEach(el=>{
-el.addEventListener("input",updateCost);
-el.addEventListener("change",updateCost);
-});
+services.forEach(s => s.addEventListener("change", updateCost));
 
 updateCost();
-
-
-// GOOGLE FORM SUBMIT
-function submitForm(){
-
-let name=document.getElementById("name").value;
-let email=document.getElementById("email").value;
-let company=document.getElementById("company").value;
-let phone=document.getElementById("phone").value;
-let cost=document.getElementById("totalCost").innerText;
-
-/* 🔴 REPLACE THIS WITH YOUR GOOGLE FORM */
-let url="YOUR_GOOGLE_FORM_LINK";
-
-url+="&entry.111="+encodeURIComponent(name);
-url+="&entry.222="+encodeURIComponent(email);
-url+="&entry.333="+encodeURIComponent(company);
-url+="&entry.444="+encodeURIComponent(phone);
-url+="&entry.555="+encodeURIComponent(cost);
-
-window.open(url,"_blank");
-
-alert("Submitted! We'll contact you.");
-}
-
 </script>
+    <h2>Ready to Secure Your Organization?</h2>
+    <p>// Reach out and let's discuss your security posture</p>
+    <a href="mailto:founder@herculexcyberlabs.com" class="btn btn-primary">
+      CONTACT US →
+    </a>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <p>© 2026 HerculeX Cyber Labs &nbsp;|&nbsp; 
+      <a href="mailto:founder@herculexcyberlabs.com">founder@herculexcyberlabs.com</a> 
+      &nbsp;|&nbsp; herculexcyberlabs.com
+      &nbsp;|&nbsp; <span class="blink">▮</span>
+    </p>
+  </footer>
 
 </body>
 </html>
