@@ -527,6 +527,73 @@
 
   <!-- CTA -->
   <div class="cta-section" id="contact">
+    <!-- SOC BUDGET CALCULATOR -->
+<div class="section" id="calculator">
+  <div class="section-label">// COST ESTIMATION</div>
+  <h2 class="section-title">SOC Budget Calculator</h2>
+
+  <div class="card" style="max-width:800px;margin:auto;">
+
+    <div class="services-grid" style="grid-template-columns: repeat(auto-fit,minmax(250px,1fr));">
+
+      <label><input type="checkbox" value="8000"> SIEM & Log Management</label>
+      <label><input type="checkbox" value="6000"> Endpoint Security (EDR)</label>
+      <label><input type="checkbox" value="7000"> Network Monitoring (NDR)</label>
+      <label><input type="checkbox" value="5000"> Vulnerability Management</label>
+      <label><input type="checkbox" value="4000"> Compliance & Reporting</label>
+      <label><input type="checkbox" value="9000"> Incident Response</label>
+      <label><input type="checkbox" value="6000"> Threat Intelligence</label>
+      <label><input type="checkbox" value="7000"> UEBA / Analytics</label>
+      <label><input type="checkbox" value="5000"> Data Protection (DLP)</label>
+      <label><input type="checkbox" value="4000"> Asset Visibility</label>
+      <label><input type="checkbox" value="3000"> Alerting & Notification</label>
+      <label><input type="checkbox" value="3000"> Access Control / SSO</label>
+      <label><input type="checkbox" value="4000"> Dashboards & Visualization</label>
+      <label><input type="checkbox" value="5000"> Integration & Scalability</label>
+
+    </div>
+
+    <div style="margin-top:30px;text-align:center;">
+      <h2 id="totalCost" style="color:#00ffe0;">₹0</h2>
+      <p id="planType" style="color:#4a7a8a;"></p>
+
+      <a href="mailto:founder@herculexcyberlabs.com?subject=SOC Quote Request"
+         class="btn btn-primary"
+         style="margin-top:15px;display:inline-block;">
+         GET EXACT QUOTE →
+      </a>
+    </div>
+
+  </div>
+</div>
+
+<script>
+const services = document.querySelectorAll('#calculator input');
+
+function updateCost() {
+  let total = 3000; // base cost
+  let count = 0;
+
+  services.forEach(s => {
+    if (s.checked) {
+      total += parseInt(s.value);
+      count++;
+    }
+  });
+
+  document.getElementById("totalCost").innerText = "₹" + total;
+
+  let plan = "Basic SOC";
+  if (count > 5) plan = "Advanced SOC";
+  if (count > 9) plan = "Enterprise SOC";
+
+  document.getElementById("planType").innerText = "Recommended: " + plan;
+}
+
+services.forEach(s => s.addEventListener("change", updateCost));
+
+updateCost();
+</script>
     <h2>Ready to Secure Your Organization?</h2>
     <p>// Reach out and let's discuss your security posture</p>
     <a href="mailto:founder@herculexcyberlabs.com" class="btn btn-primary">
